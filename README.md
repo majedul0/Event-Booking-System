@@ -16,6 +16,31 @@ Key features:
 - Paginated booking list with filtering by event and status
 - Real-time dashboard with status polling
 
+## Example: Creating a Booking
+
+Here's a successful booking creation via Postman (202 Accepted):
+
+![Postman Output](./postmanoutput.png)
+
+**Request:**
+```json
+{
+  "requestId": "7f3c2a10-9b1e-4d5a-8c6f-booking-001",
+  "eventId": 1,
+  "customerName": "Rahim Uddin",
+  "customerEmail": "rahim@example.com",
+  "seats": 2
+}
+```
+
+**Response:** `202 Accepted`
+```json
+{
+  "reference": "2ec193a6-613b-43ae-831c-333f0089a143",
+  "status": "CONFIRMED"
+}
+```
+
 ## Setup
 
 ### Prerequisites
@@ -245,30 +270,7 @@ The test exercises the real Postgres instance from `docker-compose`.
 
 1. **Start the system** (docker compose, backend, frontend).
 
-2. **Test with Postman** (Recommended):
-   - Method: `POST`
-   - URL: `http://localhost:3000/bookings`
-   - Body (JSON):
-   ```json
-   {
-     "requestId": "7f3c2a10-9b1e-4d5a-8c6f-booking-001",
-     "eventId": 1,
-     "customerName": "Rahim Uddin",
-     "customerEmail": "rahim@example.com",
-     "seats": 2
-   }
-   ```
-   - Expected Response: `202 Accepted`
-   ```json
-   {
-     "reference": "2ec193a6-613b-43ae-831c-333f0089a143",
-     "status": "CONFIRMED"
-   }
-   ```
-   
-   ![Postman Output](./postmanoutput.png)
-
-3. **Create multiple bookings** concurrently via curl:
+2. **Create multiple bookings** concurrently via curl:
    ```bash
    # Terminal 1
    curl -X POST http://localhost:3000/bookings \
