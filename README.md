@@ -244,13 +244,37 @@ The test exercises the real Postgres instance from `docker-compose`.
 ### Manual Testing
 
 1. **Start the system** (docker compose, backend, frontend).
-2. **Create multiple bookings** concurrently:
+
+2. **Test with Postman** (Recommended):
+   - Method: `POST`
+   - URL: `http://localhost:3000/bookings`
+   - Body (JSON):
+   ```json
+   {
+     "requestId": "7f3c2a10-9b1e-4d5a-8c6f-booking-001",
+     "eventId": 1,
+     "customerName": "Rahim Uddin",
+     "customerEmail": "rahim@example.com",
+     "seats": 2
+   }
+   ```
+   - Expected Response: `202 Accepted`
+   ```json
+   {
+     "reference": "2ec193a6-613b-43ae-831c-333f0089a143",
+     "status": "CONFIRMED"
+   }
+   ```
+   
+   ![Postman Output](./postmanoutput.png)
+
+3. **Create multiple bookings** concurrently via curl:
    ```bash
    # Terminal 1
    curl -X POST http://localhost:3000/bookings \
      -H 'Content-Type: application/json' \
      -d '{
-       "requestId": "'$(uuidgen)'",
+       "requestId": "booking-user-1-'$(date +%s)'",
        "eventId": 1,
        "customerName": "Test User 1",
        "customerEmail": "user1@example.com",
@@ -259,8 +283,10 @@ The test exercises the real Postgres instance from `docker-compose`.
    
    # Terminal 2, 3, 4, ... (repeat with different requestIds)
    ```
-3. **Verify in dashboard**: Bookings appear with `PENDING` status, then transition to `CONFIRMED` or `FAILED` within seconds.
-4. **Test idempotency**: Submit the same `requestId` twice; second request returns the original booking's reference.
+
+4. **Verify in dashboard**: Open http://localhost:5173, bookings appear with `PENDING` status, then transition to `CONFIRMED` or `FAILED` within seconds.
+
+5. **Test idempotency**: Submit the same `requestId` twice; second request returns the original booking's reference (no duplicate created).
 
 ## Database Schema
 
