@@ -1,4 +1,5 @@
 import type { Event } from '../api/types';
+import { CustomSelect } from './CustomSelect';
 
 interface BookingFiltersProps {
   events: Event[];
@@ -18,71 +19,95 @@ export function BookingFilters({
   onRefresh,
 }: BookingFiltersProps) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        gap: '12px',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        marginBottom: '20px',
-      }}
-    >
-      <label>
-        Event:
-        <select
-          value={eventFilter || ''}
-          onChange={(e) =>
-            setEventFilter(e.target.value ? parseInt(e.target.value) : undefined)
+    <>
+      <style>{`
+        .booking-filters {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+          flex-wrap: wrap;
+          margin-bottom: 20px;
+        }
+        .booking-filters label {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          white-space: nowrap;
+        }
+        .booking-filters button {
+          min-height: 36px;
+          padding: 8px 10px;
+          font-size: 14px;
+        }
+        @media (max-width: 768px) {
+          .booking-filters {
+            flex-direction: column;
+            gap: 10px;
+            align-items: stretch;
+            margin-bottom: 16px;
           }
-          style={{
-            marginLeft: '8px',
-            padding: '6px',
-            borderRadius: '4px',
-            border: '1px solid #ddd',
-          }}
-        >
-          <option value="">All Events</option>
-          {events.map((event) => (
-            <option key={event.id} value={event.id}>
-              {event.name}
-            </option>
-          ))}
-        </select>
-      </label>
+          .booking-filters label {
+            width: 100%;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+            white-space: normal;
+          }
+          .booking-filters button:not(.custom-select-button) {
+            width: 100%;
+            min-height: 36px;
+            padding: 8px;
+            font-size: 14px;
+          }
+        }
+      `}</style>
+      <div className="booking-filters">
+        <label style={{ width: 'auto' }}>
+          Event:
+        </label>
+        <CustomSelect
+          value={eventFilter?.toString() || ''}
+          onChange={(value) =>
+            setEventFilter(value ? parseInt(value) : undefined)
+          }
+          options={[
+            { value: '', label: 'All Events' },
+            ...events.map((event) => ({
+              value: event.id.toString(),
+              label: event.name,
+            })),
+          ]}
+        />
 
-      <label>
-        Status:
-        <select
+        <label style={{ width: 'auto', marginTop: '8px' }}>
+          Status:
+        </label>
+        <CustomSelect
           value={statusFilter || ''}
-          onChange={(e) => setStatusFilter(e.target.value || undefined)}
+          onChange={(value) => setStatusFilter(value || undefined)}
+          options={[
+            { value: '', label: 'All Status' },
+            { value: 'PENDING', label: 'Pending' },
+            { value: 'CONFIRMED', label: 'Confirmed' },
+            { value: 'FAILED', label: 'Failed' },
+          ]}
+        />
+
+        <button
+          onClick={onRefresh}
           style={{
-            marginLeft: '8px',
-            padding: '6px',
+            padding: '6px 12px',
+            backgroundColor: '#333333',
+            color: 'white',
+            border: 'none',
             borderRadius: '4px',
-            border: '1px solid #ddd',
+            cursor: 'pointer',
+            fontWeight: 'bold',
           }}
         >
-          <option value="">All Status</option>
-          <option value="PENDING">Pending</option>
-          <option value="CONFIRMED">Confirmed</option>
-          <option value="FAILED">Failed</option>
-        </select>
-      </label>
-
-      <button
-        onClick={onRefresh}
-        style={{
-          padding: '6px 12px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          fontWeight: 'bold',
-        }}
-      >
-        Refresh
-      </button>
-    </div>
+          Refresh
+        </button>
+      </div>
+    </>
   );
 }
