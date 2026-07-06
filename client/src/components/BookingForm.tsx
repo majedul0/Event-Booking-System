@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { Event } from '../api/types';
+import { CustomSelect } from './CustomSelect';
+import { getBookings } from '../api/bookings';
 
 interface BookingFormProps {
   events: Event[];
@@ -64,6 +66,21 @@ export function BookingForm({ events, onSubmit, onBookingCreated }: BookingFormP
 
     try {
       setLoading(true);
+
+      // Check for existing confirmed bookings with this email
+      const existingBookings = await getBookings({ limit: 1000 });
+      const hasConfirmedBooking = existingBookings.data.some(
+        (booking) =>
+          booking.customerEmail === customerEmail &&
+          booking.status === 'CONFIRMED',
+      );
+
+      if (hasConfirmedBooking) {
+        setError('A booking is already made with this email address');
+        setLoading(false);
+        return;
+      }
+
       const requestId = crypto.randomUUID?.() || Math.random().toString(36).slice(2);
       const response = await onSubmit({
         requestId,
@@ -92,23 +109,48 @@ export function BookingForm({ events, onSubmit, onBookingCreated }: BookingFormP
   return (
     <div
       style={{
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#ffffff',
         padding: '20px',
         borderRadius: '8px',
         marginBottom: '30px',
-        border: '1px solid #e0e0e0',
+        border: '1px solid #cccccc',
       }}
     >
-      <h2>Create New Booking</h2>
+      <style>{`
+        @media (max-width: 768px) {
+          .booking-form {
+            padding: 16px !important;
+            margin-bottom: 20px !important;
+          }
+          .form-group {
+            margin-bottom: 12px !important;
+          }
+          .form-group select,
+          .form-group input {
+            width: 100% !important;
+            box-sizing: border-box !important;
+            min-height: 36px !important;
+            padding: 6px 8px !important;
+            font-size: 14px !important;
+          }
+          .form-button {
+            padding: 12px !important;
+            font-size: 16px !important;
+            min-height: 44px !important;
+          }
+        }
+      `}</style>
+      <h2 style={{ marginTop: 0 }}>Create New Booking</h2>
 
       {error && (
         <div
           style={{
-            backgroundColor: '#f8d7da',
-            color: '#721c24',
+            backgroundColor: '#e8e8e8',
+            color: '#000000',
             padding: '12px',
             borderRadius: '4px',
             marginBottom: '12px',
+            border: '1px solid #999999',
           }}
         >
           {error}
@@ -118,11 +160,12 @@ export function BookingForm({ events, onSubmit, onBookingCreated }: BookingFormP
       {success && (
         <div
           style={{
-            backgroundColor: '#d4edda',
-            color: '#155724',
+            backgroundColor: '#e8e8e8',
+            color: '#000000',
             padding: '12px',
             borderRadius: '4px',
             marginBottom: '12px',
+            border: '1px solid #999999',
           }}
         >
           Booking created! {polling && 'Waiting for confirmation...'}
@@ -130,33 +173,22 @@ export function BookingForm({ events, onSubmit, onBookingCreated }: BookingFormP
       )}
 
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '12px' }}>
+        <div style={{ marginBottom: '12px' }} className="form-group">
           <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold' }}>
             Event:
           </label>
-          <select
-            value={eventId}
-            onChange={(e) => setEventId(e.target.value ? parseInt(e.target.value) : '')}
-            disabled={loading}
-            required
-            style={{
-              width: '100%',
-              padding: '8px',
-              borderRadius: '4px',
-              border: '1px solid #ddd',
-              boxSizing: 'border-box',
-            }}
-          >
-            <option value="">Select an event</option>
-            {events.map((event) => (
-              <option key={event.id} value={event.id}>
-                {event.name} ({event.availableSeats} seats available)
-              </option>
-            ))}
-          </select>
+          <CustomSelect
+            value={eventId.toString()}
+            onChange={(value) => setEventId(value ? parseInt(value) : '')}
+            options={events.map((event) => ({
+              value: event.id.toString(),
+              label: `${event.name} (${event.availableSeats} seats available)`,
+            }))}
+            placeholder="Select an event"
+          />
         </div>
 
-        <div style={{ marginBottom: '12px' }}>
+        <div style={{ marginBottom: '12px' }} className="form-group">
           <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold' }}>
             Customer Name:
           </label>
@@ -170,13 +202,15 @@ export function BookingForm({ events, onSubmit, onBookingCreated }: BookingFormP
               width: '100%',
               padding: '8px',
               borderRadius: '4px',
-              border: '1px solid #ddd',
+              border: '1px solid #999999',
               boxSizing: 'border-box',
+              backgroundColor: '#ffffff',
+              color: '#000000',
             }}
           />
         </div>
 
-        <div style={{ marginBottom: '12px' }}>
+        <div style={{ marginBottom: '12px' }} className="form-group">
           <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold' }}>
             Email:
           </label>
@@ -190,13 +224,15 @@ export function BookingForm({ events, onSubmit, onBookingCreated }: BookingFormP
               width: '100%',
               padding: '8px',
               borderRadius: '4px',
-              border: '1px solid #ddd',
+              border: '1px solid #999999',
               boxSizing: 'border-box',
+              backgroundColor: '#ffffff',
+              color: '#000000',
             }}
           />
         </div>
 
-        <div style={{ marginBottom: '12px' }}>
+        <div style={{ marginBottom: '12px' }} className="form-group">
           <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold' }}>
             Number of Seats:
           </label>
@@ -211,8 +247,10 @@ export function BookingForm({ events, onSubmit, onBookingCreated }: BookingFormP
               width: '100%',
               padding: '8px',
               borderRadius: '4px',
-              border: '1px solid #ddd',
+              border: '1px solid #999999',
               boxSizing: 'border-box',
+              backgroundColor: '#ffffff',
+              color: '#000000',
             }}
           />
         </div>
@@ -220,10 +258,11 @@ export function BookingForm({ events, onSubmit, onBookingCreated }: BookingFormP
         <button
           type="submit"
           disabled={loading}
+          className="form-button"
           style={{
             width: '100%',
             padding: '10px',
-            backgroundColor: loading ? '#ccc' : '#28a745',
+            backgroundColor: loading ? '#cccccc' : '#333333',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
