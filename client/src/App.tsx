@@ -39,17 +39,33 @@ function App() {
   };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+    <div className="app-container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px', backgroundColor: '#ffffff', color: '#000000', minHeight: '100vh' }}>
+      <style>{`
+        @media (max-width: 768px) {
+          body {
+            margin: 0;
+            padding: 0;
+          }
+          #root {
+            padding: 0;
+          }
+          .app-container {
+            padding: 12px !important;
+            margin: 0 !important;
+          }
+        }
+      `}</style>
       <h1>Event Booking System</h1>
 
       {error && (
         <div
           style={{
-            backgroundColor: '#f8d7da',
-            color: '#721c24',
+            backgroundColor: '#e8e8e8',
+            color: '#000000',
             padding: '12px',
             borderRadius: '4px',
             marginBottom: '20px',
+            border: '1px solid #999999',
           }}
         >
           {error}
@@ -73,7 +89,7 @@ function App() {
         onRefresh={refetch}
       />
 
-      <BookingsTable bookings={bookings.data} loading={bookingsLoading} />
+      <BookingsTable bookings={bookings.data} loading={bookingsLoading} onBookingDeleted={refetch} />
 
       <Pagination
         page={page}
