@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Query, HttpCode } from '@nestjs/common';
+import { Controller, Post, Get, Delete, Body, Query, Param, HttpCode } from '@nestjs/common';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { QueryBookingsDto } from './dto/query-bookings.dto';
@@ -16,5 +16,10 @@ export class BookingsController {
   @Get()
   async findAll(@Query() query: QueryBookingsDto) {
     return this.bookingsService.findAll(query);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return this.bookingsService.delete(id);
   }
 }
