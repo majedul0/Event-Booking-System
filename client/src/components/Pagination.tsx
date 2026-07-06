@@ -15,23 +15,45 @@ export function Pagination({
   const totalPages = Math.ceil(total / limit);
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '12px',
-        marginTop: '20px',
-      }}
-    >
+    <>
+      <style>{`
+        @media (max-width: 768px) {
+          .pagination {
+            flex-direction: column;
+            gap: 8px !important;
+            margin-top: 16px !important;
+          }
+          .pagination button {
+            width: 100% !important;
+            min-height: 36px !important;
+            padding: 8px !important;
+            font-size: 14px !important;
+          }
+          .pagination span {
+            text-align: center;
+            font-size: 14px;
+          }
+        }
+      `}</style>
+      <div
+        className="pagination"
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '12px',
+          marginTop: '20px',
+        }}
+      >
       <button
         onClick={() => onPageChange(page - 1)}
         disabled={page === 1}
         style={{
           padding: '6px 12px',
           borderRadius: '4px',
-          border: '1px solid #ddd',
-          backgroundColor: page === 1 ? '#f5f5f5' : 'white',
+          border: '1px solid #999999',
+          backgroundColor: page === 1 ? '#e8e8e8' : '#ffffff',
+          color: '#000000',
           cursor: page === 1 ? 'default' : 'pointer',
           opacity: page === 1 ? 0.5 : 1,
         }}
@@ -39,7 +61,7 @@ export function Pagination({
         Previous
       </button>
 
-      <span style={{ color: '#666' }}>
+      <span style={{ color: '#000000' }}>
         Page {page} of {totalPages}
       </span>
 
@@ -49,14 +71,16 @@ export function Pagination({
         style={{
           padding: '6px 12px',
           borderRadius: '4px',
-          border: '1px solid #ddd',
-          backgroundColor: page === totalPages || totalPages === 0 ? '#f5f5f5' : 'white',
+          border: '1px solid #999999',
+          backgroundColor: page === totalPages || totalPages === 0 ? '#e8e8e8' : '#ffffff',
+          color: '#000000',
           cursor: page === totalPages || totalPages === 0 ? 'default' : 'pointer',
           opacity: page === totalPages || totalPages === 0 ? 0.5 : 1,
         }}
       >
         Next
       </button>
-    </div>
+      </div>
+    </>
   );
 }
