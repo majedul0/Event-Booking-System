@@ -35,6 +35,10 @@ class ApiClient {
   post<T>(path: string, body: unknown): Promise<T> {
     return this.request('POST', path, body);
   }
+
+  delete<T>(path: string): Promise<T> {
+    return this.request('DELETE', path);
+  }
 }
 
 export const apiClient = new ApiClient();
