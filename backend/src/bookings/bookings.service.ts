@@ -17,6 +17,20 @@ export class BookingsService {
 
   async create(createBookingDto: CreateBookingDto) {
     try {
+      // Check if email already has a confirmed booking
+      const existingConfirmedBooking = await this.prisma.booking.findFirst({
+        where: {
+          customerEmail: createBookingDto.customerEmail,
+          status: 'CONFIRMED',
+        },
+      });
+
+      if (existingConfirmedBooking) {
+        throw new BadRequestException(
+          'A booking is already made with this email address',
+        );
+      }
+
       const booking = await this.prisma.booking.create({
         data: {
           requestId: createBookingDto.requestId,
@@ -86,6 +100,35 @@ export class BookingsService {
       page,
       limit,
     };
+  }
+
+  async delete(bookingId: string) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
+    });
+
+    if (!booking) {
+      throw new BadRequestException('Booking not found');
+    }
+
+    // If booking was confirmed, restore the available seats
+    if (booking.status === 'CONFIRMED') {
+      await this.prisma.event.update({
+        where: { id: booking.eventId },
+        data: {
+          availableSeats: {
+            increment: booking.seats,
+          },
+        },
+      });
+    }
+
+    // Delete the booking
+    await this.prisma.booking.delete({
+      where: { id: bookingId },
+    });
+
+    return { message: 'Booking deleted successfully' };
   }
 
   async processBooking(bookingId: string): Promise<void> {
