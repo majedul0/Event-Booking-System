@@ -1,13 +1,13 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
+  --text: #000000;
+  --text-h: #000000;
+  --bg: #ffffff;
+  --border: #cccccc;
+  --code-bg: #f0f0f0;
+  --accent: #333333;
+  --accent-bg: rgba(200, 200, 200, 0.2);
+  --accent-border: rgba(0, 0, 0, 0.3);
+  --social-bg: rgba(240, 240, 240, 0.5);
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
@@ -17,7 +17,7 @@
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -27,26 +27,6 @@
 
   @media (max-width: 1024px) {
     font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
   }
 }
 
@@ -62,8 +42,82 @@
   box-sizing: border-box;
 }
 
+html {
+  background: #ffffff;
+  color: #000000;
+}
+
 body {
   margin: 0;
+  background: #ffffff;
+  color: #000000;
+}
+
+input,
+select,
+button,
+textarea {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #cccccc;
+  font-size: 16px;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 20px;
+  padding-right: 32px;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: 2px solid #333333;
+  outline-offset: 0;
+}
+
+@media (max-width: 768px) {
+  :root {
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 28px;
+    margin: 16px 0;
+  }
+
+  h2 {
+    font-size: 18px;
+    margin: 12px 0 6px;
+  }
+
+  #root {
+    padding: 0;
+    border-inline: none;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 14px;
+    padding: 6px 8px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 8px;
+    min-height: 40px;
+    min-width: 40px;
+  }
 }
 
 h1,
