@@ -32,3 +32,7 @@ export async function createBooking(
 ): Promise<CreateBookingResponse> {
   return apiClient.post('/bookings', request);
 }
+
+export async function deleteBooking(bookingId: string): Promise<{ message: string }> {
+  return apiClient.delete(`/bookings/${bookingId}`);
+}
